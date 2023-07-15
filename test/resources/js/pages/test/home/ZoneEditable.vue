@@ -37,30 +37,49 @@
             Distribution
           </label>
 
-          <input
-            v-model="distribution.percentage"
-            placeholder="Percentage"
-            class="form-control"
-          >
+          <div class="d-flex gap-2">
+            <input
+              v-model="distribution.percentage"
+              placeholder="Percentage"
+              class="form-control"
+            >
+            <button
+              @click="removeDistrubution(distribution.id)"
+              class="btn btn-danger"
+              :disabled="saving"
+            >
+              Remove
+            </button>
+          </div>
         </div>
+
       </div>
 
       <div class="zone-edit-actions">
         <button
-          class="btn btn-secondary"
-          @click="setDisplay(true)"
+          class="btn btn-primary"
+          @click="addDistrubution()"
           :disabled="saving"
         >
-         Cancel
+          Add distribution
         </button>
+        <div class="zone-actions">
+          <button
+            class="btn btn-secondary"
+            @click="setDisplay(true)"
+            :disabled="saving"
+          >
+          Cancel
+          </button>
 
-        <button
-          class="btn btn-success"
-          @click="save"
-          :disabled="saving"
-        >
-          Save
-        </button>
+          <button
+            class="btn btn-success"
+            @click="save"
+            :disabled="saving"
+          >
+            Save
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -80,6 +99,7 @@ export default {
       form: {
         name: '',
         distributions: [],
+        deletedDistributions: []
       },
       saving: false,
     };
@@ -102,6 +122,23 @@ export default {
         };
       });
     },
+    getDistributionId() {
+      const long = this.form.distributions.length;
+      if (!long) return 1;
+
+      return this.form.distributions[long - 1].id + 1
+    },
+    addDistrubution() {
+      this.form.distributions.push({ id: this.getDistributionId(), percentage: 0, isNew: true });
+    },
+    removeDistrubution(distId) {
+      const deleteIndex = this.form.distributions.findIndex(({ id }) => id === distId);
+      const distrubution = this.form.distributions[deleteIndex];
+
+      if (!distrubution.isNew) this.form.deletedDistributions.push(distrubution);
+      
+      this.form.distributions.splice(deleteIndex, 1)
+    },
     setDisplay(value) {
       this.display = value;
 
@@ -115,7 +152,12 @@ export default {
       const params = {
         id: this.id,
         name: this.form.name,
-        distributions: this.form.distributions
+        deletedDistributions: this.form.deletedDistributions,
+        distributions: this.form.distributions.map((dist) => ({
+          ...dist,
+          isNew: dist.isNew || false,
+          percentage: Number(dist.percentage)
+        })),
       };
 
       try {
@@ -161,6 +203,13 @@ export default {
     gap: $small-action-space;
 
     .zone-edit-actions {
+      display: flex;
+      width: 100%;
+      margin-top: $mt-btn;
+      justify-content: space-between;
+    }
+
+    .zone-edit {
       display: flex;
       gap: $small-action-space;
       justify-content: end;
