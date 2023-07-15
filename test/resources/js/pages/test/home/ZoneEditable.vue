@@ -1,90 +1,96 @@
 <template>
-  <div class="zone-editable">
+  <div>
     <notification :show="showNotification" />
     <div
-      v-if="display"
-      class="zone-display"
+      class="zone-editable"
     >
-      <div>
-        <p>Zone Name: <strong>{{ name }}</strong></p>
-        <p>Last Name Update: {{ updatedAtDate }}</p>
-        <p>Distributions: {{ distributionDisplay }}</p>
-      </div>
-
-      <button
-        class="btn btn-primary"
-        @click="setDisplay(false)"
-        :disabled="saving"
+      <div
+        v-if="display"
+        class="zone-display"
+        :class="{ 'zone-display__active': distributions.length >= 5 }"
       >
-        Edit
-      </button>
-    </div>
-    <div
-      v-else
-      class="zone-edit"
-    >
-      <div v-if="errorMessage" class="alert alert-danger" role="alert">
-        {{ errorMessage }}
-      </div>
-      <label class="control-label">
-        Zone Name
-      </label>
-
-      <input
-        v-model="form.name"
-        placeholder="Zone name"
-        class="form-control"
-        :disabled="saving"
-      >
-
-      <div class="zone-edit-distributions">
-        <div :key="distribution.id" v-for="distribution in form.distributions">
-          <label class="control-label">
-            Distribution
-          </label>
-
-          <div class="d-flex gap-2">
-            <input
-              v-model="distribution.percentage"
-              placeholder="Percentage"
-              class="form-control"
-            >
-            <button
-              @click="removeDistrubution(distribution.id)"
-              class="btn btn-danger"
-              :disabled="saving"
-            >
-              Remove
-            </button>
-          </div>
+        <div>
+          <p>Zone Name: <strong>{{ name }}</strong></p>
+          <p>Last Name Update: {{ updatedAtDate }}</p>
+          <p>Distributions: {{ distributionDisplay }}</p>
         </div>
 
-      </div>
-
-      <div class="zone-edit-actions">
         <button
           class="btn btn-primary"
-          @click="addDistrubution()"
+          @click="setDisplay(false)"
           :disabled="saving"
         >
-          Add distribution
+          Edit
         </button>
-        <div class="zone-actions">
-          <button
-            class="btn btn-secondary"
-            @click="setDisplay(true)"
-            :disabled="saving"
-          >
-          Cancel
-          </button>
+      </div>
+      <div
+        v-else
+        class="zone-edit"
+      >
+        <h5>Edit Zone and Distributions</h5>
+        <div v-if="errorMessage" class="alert alert-danger" role="alert">
+          {{ errorMessage }}
+        </div>
+        <label class="control-label">
+          Zone Name
+        </label>
 
+        <input
+          v-model="form.name"
+          placeholder="Zone name"
+          class="form-control"
+          :disabled="saving"
+        >
+
+        <div class="zone-edit-distributions">
+          <div :key="distribution.id" v-for="distribution in form.distributions">
+            <label class="control-label">
+              Distribution
+            </label>
+
+            <div class="d-flex gap-2">
+              <input
+                v-model="distribution.percentage"
+                placeholder="Percentage"
+                class="form-control"
+              >
+              <button
+                @click="removeDistrubution(distribution.id)"
+                class="btn btn-danger"
+                :disabled="saving"
+              >
+                Remove
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="zone-edit-actions">
           <button
-            class="btn btn-success"
-            @click="save"
+            class="btn btn-primary"
+            @click="addDistrubution()"
             :disabled="saving"
           >
-            Save
+            Add distribution
           </button>
+          <div class="zone-actions">
+            <button
+              class="btn btn-secondary"
+              @click="setDisplay(true)"
+              :disabled="saving"
+            >
+            Cancel
+            </button>
+
+            <button
+              class="btn btn-success"
+              @click="save"
+              :disabled="saving"
+            >
+              Save
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -247,41 +253,45 @@ export default {
 
 <style lang="scss">
 @import 'resources/scss/variables.scss';
+  
+.zone-display {
+  border: 1px solid $gray-color;
+  padding: $qmb;
+  border-radius: $border-radius;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
-.zone-editable {
+  &__active {
+    background: #dbe8ff;
+  }
+}
+
+.zone-edit {
+  display: flex;
+  flex-direction: column;
+  gap: $small-action-space;
   border: 1px solid $gray-color;
   padding: $qmb;
   border-radius: $border-radius;
 
-  .zone-display {
+  .zone-edit-actions {
     display: flex;
-    align-items: center;
+    width: 100%;
+    margin-top: $mt-btn;
     justify-content: space-between;
   }
 
   .zone-edit {
     display: flex;
-    flex-direction: column;
     gap: $small-action-space;
+    justify-content: end;
+  }
 
-    .zone-edit-actions {
-      display: flex;
-      width: 100%;
-      margin-top: $mt-btn;
-      justify-content: space-between;
-    }
-
-    .zone-edit {
-      display: flex;
-      gap: $small-action-space;
-      justify-content: end;
-    }
-
-    .zone-edit-distributions {
-      display: grid;
-      grid-template-columns: repeat(1, 1fr);
-      gap: $small-action-space;
-    }
+  .zone-edit-distributions {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: $small-action-space;
   }
 }
 
