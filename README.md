@@ -46,12 +46,12 @@ npm run watch
 
 Run the command to create the migrations
 ```
-
+python manage.py makemigrations
 ```
 
 Run the command to apply the migrations
 ```
-
+python manage.py migrate
 ```
 
 When the database has been created run the command seed_db to populate with initial data
