@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+{% load static manifest %}
+
+<html lang="en">
+  <head>
+    <title>{% block title %}Test{% endblock %}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name='csrf_token' content="{{ csrf_token }}"/>
+    <link rel="stylesheet" href="{% manifest 'app.css' %}">
+    <link rel="stylesheet" href="{% manifest 'layout/app.css' %}">
+    {% block styles %}
+
+    {% endblock %}
+
+    {% block scripts_head %}
+
+    {% endblock %}
+  </head>
+  <body>
+  	<div id="app">
+      <app v-cloak>
+        <template v-slot="slotProps">
+        {% block content %}
+        {% endblock %}
+        </template>
+  	  </app>
+    </div>
+    <script type="text/javascript" src="{% manifest 'app.js' %}"></script>
+    {% block scripts_bottom %}
+
+    {% endblock %}
+    <script type="text/javascript" src="{% manifest 'layout/app.js' %}"></script>
+  </body>
+</html>

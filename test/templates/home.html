@@ -1,0 +1,21 @@
+{% extends 'layouts/app.html' %}
+
+{% load manifest static %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% manifest 'pages/test/home.css' %}">
+{% endblock %}
+
+{% block title %}
+  Home
+{% endblock %}
+
+{% block content %}
+<home-page
+  :context="{{ context_json }}"
+/>
+{% endblock %}
+
+{% block scripts_bottom %}
+<script type="text/javascript" src="{% manifest 'pages/test/home.js' %}"></script>
+{% endblock %}
