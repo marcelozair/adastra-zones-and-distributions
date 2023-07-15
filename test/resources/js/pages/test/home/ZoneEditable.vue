@@ -85,7 +85,7 @@ export default {
   },
   computed: {
     distributionDisplay() {
-      return this.distributions.map(distribution => distribution.percentage).join('-');
+      return this.distributions.map(distribution => `${distribution.percentage}%`).join(' - ');
     }
   },
   mounted() {
