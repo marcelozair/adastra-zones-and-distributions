@@ -23,7 +23,7 @@ class ZoneSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Zone
-        fields = ['id', 'name', 'distributions']
+        fields = ['id', 'name', 'distributions', 'updated_at']
 
     def validate_name(self, value):
         length_name = len(value)

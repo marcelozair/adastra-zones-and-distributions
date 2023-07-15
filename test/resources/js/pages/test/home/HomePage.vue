@@ -9,6 +9,7 @@
         v-for="zone in zones"
         :id="zone.id"
         :name="zone.name"
+        :updatedAt="zone.updatedAt"
         :distributions="zone.distributions"
         :key="zone.uid"
         @edit="updateZoneAndDistributions($event, zone)"
@@ -66,13 +67,15 @@ export default {
         id: data.id,
         name: data.name,
         uid: this.zoneUid++,
-        distributions: data.distributions
+        distributions: data.distributions,
+        updatedAt: data.updated_at
       };
     });
   },
   methods: {
-    updateZoneAndDistributions({ name, distributions }, zone) {
+    updateZoneAndDistributions({ name, distributions, updatedAt }, zone) {
       zone.name = name;
+      zone.updatedAt = updatedAt;
       zone.distributions = distributions;
     }
   }

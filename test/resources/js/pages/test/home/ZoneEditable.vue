@@ -5,7 +5,9 @@
       class="zone-display"
     >
       <div>
-        Zone Name: <strong>{{ name }}</strong> Distributions: {{ distributionDisplay }}
+        <p>Zone Name: <strong>{{ name }}</strong></p>
+        <p>Last Name Update: {{ updatedAtDate }}</p>
+        <p>Distributions: {{ distributionDisplay }}</p>
       </div>
 
       <button
@@ -89,11 +91,14 @@
 </template>
 
 <script>
+import dateHelper from './../../../helpers/date';
+
 export default {
   name: 'ZoneEditable',
   props: {
     name: String,
     id: Number,
+    updatedAt: String,
     distributions: Array,
   },
   data() {
@@ -111,6 +116,9 @@ export default {
   computed: {
     distributionDisplay() {
       return this.distributions.map(distribution => `${distribution.percentage}%`).join(' - ');
+    },
+    updatedAtDate() {
+      return dateHelper.parseDate(this.updatedAt)
     }
   },
   mounted() {
@@ -201,7 +209,8 @@ export default {
         if (response.status === 202) {
           this.$emit('edit', {
             name: params.name,
-            distributions: params.distributions
+            distributions: params.distributions,
+            updatedAt: new Date().toString()
           });
         }
 
@@ -262,5 +271,9 @@ export default {
       gap: $small-action-space;
     }
   }
+}
+
+p {
+  margin-bottom: 0 !important;
 }
 </style>
