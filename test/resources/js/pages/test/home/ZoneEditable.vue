@@ -48,6 +48,7 @@
       <div class="zone-edit-actions">
         <button
           class="btn btn-secondary"
+          @click="setDisplay(true)"
           :disabled="saving"
         >
          Cancel
