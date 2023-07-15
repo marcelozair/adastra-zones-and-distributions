@@ -20,6 +20,9 @@
       v-else
       class="zone-edit"
     >
+      <div v-if="errorMessage" class="alert alert-danger" role="alert">
+        {{ errorMessage }}
+      </div>
       <label class="control-label">
         Zone Name
       </label>
@@ -95,6 +98,7 @@ export default {
   },
   data() {
     return {
+      errorMessage: '',
       display: true,
       form: {
         name: '',
@@ -146,21 +150,52 @@ export default {
         this.getValuesFromProps();
       }
     },
+    validationForm(values) {
+      if (values.name.length === 0) {
+        return ({ message: 'The zone name cannot be empty' });
+      }
+
+      if (values.name.includes('  ')) {
+        return ({ message: 'The zone name cannot have more than one space between each word' });
+      }
+
+      let totalDistributions = 0;
+
+      for (const distribution of values.distributions) {
+        if (
+          typeof distribution.percentage !== 'number' ||
+          Number.isNaN(distribution.percentage)
+        ) {
+          return ({ message: 'Distribution percentage is invalid' });
+        }
+
+        totalDistributions += distribution.percentage;
+      }
+
+      if (totalDistributions !== 100) {
+        return ({ message: 'The sum of all distributions must be ensured to be 100%' });
+      }
+
+      return false;
+    },
     async save() {
       this.saving = true;
 
       const params = {
         id: this.id,
-        name: this.form.name,
+        name: this.form.name.trim(),
         deletedDistributions: this.form.deletedDistributions,
         distributions: this.form.distributions.map((dist) => ({
           ...dist,
           isNew: dist.isNew || false,
-          percentage: Number(dist.percentage)
+          percentage: !dist.percentage ? null : Number(dist.percentage)
         })),
       };
 
       try {
+        const formErrors = this.validationForm(params);
+        if (formErrors) throw new Error(formErrors.message);
+
         const response = await axios.put('/api/zones/edit', params);
 
         if (response.status === 202) {
@@ -171,9 +206,15 @@ export default {
         }
 
         this.display = true;
+        if (this.errorMessage) this.errorMessage = ''; 
       } catch(error) {
-        console.error('Something went wrong');
-        alert('Something went wrong');
+        if (error.response?.data?.message) {
+          this.errorMessage = error.response.data.message;
+          return;
+        }
+
+        this.errorMessage = error.message;
+        console.error(this.errorMessage);
       } finally {
         this.saving = false;
       }
