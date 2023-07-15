@@ -21,5 +21,5 @@ from test import views as test_views
 urlpatterns = [
     path('', test_views.home),
     path('admin/', admin.site.urls),
-    path('api/zones', include(('zones.api.urls', 'zones'), namespace='api_zones')),
+    path('api/zones/', include(('zones.api.urls', 'zones'), namespace='api_zones')),
 ]

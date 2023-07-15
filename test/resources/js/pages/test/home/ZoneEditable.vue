@@ -32,7 +32,7 @@
       >
 
       <div class="zone-edit-distributions">
-        <div v-for="distribution in form.distributions">
+        <div :key="distribution.id" v-for="distribution in form.distributions">
           <label class="control-label">
             Distribution
           </label>
@@ -115,14 +115,27 @@ export default {
       const params = {
         id: this.id,
         name: this.form.name,
+        distributions: this.form.distributions
       };
 
-      await axios.post('/api/zones/edit', params);
+      try {
+        const response = await axios.put('/api/zones/edit', params);
 
-      this.$emit('edit', {name: params.name});
+        if (response.status === 202) {
+          this.$emit('edit', {
+            name: params.name,
+            distributions: params.distributions
+          });
+        }
 
-      this.saving = false;
-      this.display = true;
+        this.display = true;
+      } catch(error) {
+        console.error('Something went wrong');
+        alert('Something went wrong');
+      } finally {
+        this.saving = false;
+      }
+
     }
   }
 }

@@ -11,7 +11,7 @@
         :name="zone.name"
         :distributions="zone.distributions"
         :key="zone.uid"
-        @edit="zone.name = $event.name"
+        @edit="updateZoneAndDistributions($event, zone)"
         class="zone"
       />
     </div>
@@ -69,6 +69,12 @@ export default {
         distributions: data.distributions
       };
     });
+  },
+  methods: {
+    updateZoneAndDistributions({ name, distributions }, zone) {
+      zone.name = name;
+      zone.distributions = distributions;
+    }
   }
 }
 </script>
