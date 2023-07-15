@@ -1,6 +1,6 @@
 <template>
   <div class="home-page">
-    <h1 class="display-5 fw-bold text-center">
+    <h1 class="display-5 fw-bold text-center my-4">
       Zones and Distributions
     </h1>
 

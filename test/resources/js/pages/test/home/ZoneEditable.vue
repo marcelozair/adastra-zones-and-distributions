@@ -1,5 +1,6 @@
 <template>
   <div class="zone-editable">
+    <notification :show="showNotification" />
     <div
       v-if="display"
       class="zone-display"
@@ -92,9 +93,13 @@
 
 <script>
 import dateHelper from './../../../helpers/date';
+import Notification from './components/Notification.vue'
 
 export default {
   name: 'ZoneEditable',
+  components: {
+    Notification
+  },
   props: {
     name: String,
     id: Number,
@@ -104,6 +109,7 @@ export default {
   data() {
     return {
       errorMessage: '',
+      showNotification: false,
       display: true,
       form: {
         name: '',
@@ -212,6 +218,12 @@ export default {
             distributions: params.distributions,
             updatedAt: new Date().toString()
           });
+
+          this.showNotification = true;
+
+          setTimeout(() =>{
+            this.showNotification = false
+          }, 3000)
         }
 
         this.display = true;
