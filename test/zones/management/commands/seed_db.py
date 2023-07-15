@@ -13,6 +13,11 @@ class Command(BaseCommand):
         self.create_zones('D', [15, 15, 5, 10, 55])
 
     def create_zones(self, name, percentages):
+        zone_exist = Zone.objects.filter(name=name).first()
+        if zone_exist:
+            print('Already exist a zone with that name', name)
+            return
+
         zone = Zone.objects.create(name=name)
 
         for percentage in percentages:
